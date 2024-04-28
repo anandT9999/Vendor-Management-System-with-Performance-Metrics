@@ -1,61 +1,31 @@
 # Vendor-Management-System-with-Performance-Metrics
 Develop a Vendor Management System using Django and Django REST Framework. This system will handle vendor profiles, track purchase orders, and calculate vendor performance metrics.
 
-## Core Features
+## Backend Logic for Performance Metrics
 
-### 1. Vendor Profile Management
+### On-Time Delivery Rate
+- **What it does**: Figures out how often orders arrive on time.
+- **How it works**: When an order is marked as done, we check if it arrived by its due date. Then we see how many orders did and didn't make it on time, and calculate the percentage of on-time ones.
 
-#### Model Design
-Create a model to store vendor information including name, contact details, address, and a unique vendor code.
+### Quality Rating Average
+- **What it does**: Finds out how well vendors are rated for their orders.
+- **How it works**: After each order is done, we add up all the ratings given to the vendor. Then we divide that total by the number of orders to get an average rating.
 
-#### API Endpoints
-- **POST /api/vendors/:**
-  - Create a new vendor.
-  
-- **GET /api/vendors/:**
-  - List all vendors.
-  
-- **GET /api/vendors/{vendor_id}/:**
-  - Retrieve a specific vendor's details.
-  
-- **PUT /api/vendors/{vendor_id}/:**
-  - Update a vendor's details.
-  
-- **DELETE /api/vendors/{vendor_id}/:**
-  - Delete a vendor.
+### Average Response Time
+- **What it does**: Shows how quickly vendors respond to orders.
+- **How it works**: When a vendor gets an order, we measure the time it takes them to say they got it. We do this for all orders, then find the average time it takes across all of them.
 
-### 2. Purchase Order Tracking
+### Fulfilment Rate
+- **What it does**: Tells us how often orders are completed without problems.
+- **How it works**: Whenever an order changes status, we check if it was completed without any issues. Then we calculate the percentage of these problem-free orders out of all the orders sent to the vendor.
 
-#### Model Design
-Track purchase orders with fields like PO number, vendor reference, order date, items, quantity, and status.
+## API Endpoint Implementation
 
-#### API Endpoints
-- **POST /api/purchase_orders/:**
-  - Create a purchase order.
-  
-- **GET /api/purchase_orders/:**
-  - List all purchase orders with an option to filter by vendor.
-  
-- **GET /api/purchase_orders/{po_id}/:**
-  - Retrieve details of a specific purchase order.
-  
-- **PUT /api/purchase_orders/{po_id}/:**
-  - Update a purchase order.
-  
-- **DELETE /api/purchase_orders/{po_id}/:**
-  - Delete a purchase order.
+### Vendor Performance Endpoint (GET /api/vendors/{vendor_id}/performance)
+- **Purpose**: Gets the performance numbers for a specific vendor.
+- **Data Returned**: Includes how often they deliver on time, their average rating, how quickly they respond, and their success rate.
 
-### 3. Vendor Performance Evaluation
-
-#### Metrics
-- On-Time Delivery Rate: Percentage of orders delivered by the promised date.
-- Quality Rating: Average of quality ratings given to a vendor’s purchase orders.
-- Response Time: Average time taken by a vendor to acknowledge or respond to purchase orders.
-- Fulfilment Rate: Percentage of purchase orders fulfilled without issues.
-
-#### Model Design
-Add fields to the vendor model to store these performance metrics.
-
-#### API Endpoints
-- **GET /api/vendors/{vendor_id}/performance:**
-  - Retrieve a vendor's performance metrics.
+### Update Acknowledgment Endpoint
+- **Purpose**: Lets vendors acknowledge they received an order.
+- **Endpoint**: POST /api/purchase_orders/{po_id}/acknowledge
+- **How it works**: When a vendor acknowledges they got an order, we update the system. This also helps in calculating how fast vendors usually respond.
